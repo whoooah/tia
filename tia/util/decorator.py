@@ -1,4 +1,5 @@
 from functools import wraps
+import collections
 
 
 def lazy_property(fct, name=None):
@@ -29,7 +30,7 @@ class DeferredExecutionMixin(object):
 
     def __getattribute__(self, name):
         attr = super(DeferredExecutionMixin, self).__getattribute__(name)
-        if callable(attr) and not name.startswith('_') and name not in self.NOT_DEFERRED \
+        if isinstance(attr, collections.Callable) and not name.startswith('_') and name not in self.NOT_DEFERRED \
                 and not isinstance(attr, DeferredExecutionMixin):
             def wrapped(*args, **kwargs):
                 self._deferred.append(lambda: attr(*args, **kwargs))
